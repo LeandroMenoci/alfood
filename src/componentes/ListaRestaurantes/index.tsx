@@ -1,18 +1,25 @@
-import axios from 'axios';
-import { useEffect, useState } from 'react';
+import axios, { AxiosRequestConfig } from 'axios';
+import React, { useEffect, useState } from 'react';
 import { IPaginacao } from '../../interfaces/IPaginacao';
 import IRestaurante from '../../interfaces/IRestaurante';
 import style from './ListaRestaurantes.module.scss';
 import Restaurante from './Restaurante';
+
+interface IParametrosBusca {
+  ordering?: string
+  search?: string
+}
 
 const ListaRestaurantes = () => {
 
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([])
   const [proximaPagina, setProximaPagina] = useState('')
   const [paginaAnterior, setPaginaAnterior] = useState('')
+  const [busca, setBusca] = useState('')
 
-  const carregarDados = (url: string) => {
-    axios.get<IPaginacao<IRestaurante>>(url)
+  // agora, o carregarDados recebe opcionalmente as opcoes de configuracao do axios
+  const carregarDados = (url: string, opcoes: AxiosRequestConfig = {}) => {
+    axios.get<IPaginacao<IRestaurante>>(url, opcoes)
       .then(resposta => {
         setRestaurantes(resposta.data.results)
         setProximaPagina(resposta.data.next)
@@ -22,6 +29,23 @@ const ListaRestaurantes = () => {
         console.log(erro)
       })
   }
+
+  // a cada busca, montamos um objeto de opcoes
+  const buscar = (evento: React.FormEvent<HTMLFormElement>) => {
+    evento.preventDefault()
+    const opcoes = {
+      params: {
+
+      } as IParametrosBusca
+    }
+    if (busca) {
+      opcoes.params.search = busca
+    }
+
+    carregarDados('http://localhost:8000/api/v1/restaurantes/', opcoes)
+  }
+
+
 
   useEffect(() => {
     carregarDados('http://localhost:8000/api/v1/restaurantes/')
