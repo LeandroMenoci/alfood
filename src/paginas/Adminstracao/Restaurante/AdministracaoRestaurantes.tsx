@@ -5,15 +5,16 @@ import { Link } from "react-router-dom"
 import IRestaurante from "../../../interfaces/IRestaurante"
 
 const AdministracaoRestaurantes = () => {
+  const url = 'http://localhost:8000/api/v2/restaurantes/'
   const [restaurantes, setRestaurantes] = useState<IRestaurante[]>([])
 
   useEffect(() => {
-    axios.get<IRestaurante[]>('http://localhost:8000/api/v2/restaurantes/')
+    axios.get<IRestaurante[]>(url)
       .then(resposta => setRestaurantes(resposta.data))
   }, [])
 
   const excluir = (restauranteAhSerExcluido: IRestaurante) => {
-    axios.delete(`http://localhost:8000/api/v2/restaurantes/${restauranteAhSerExcluido.id}/`)
+    axios.delete(`${url}${restauranteAhSerExcluido.id}/`)
       .then(() => {
         const listaRestaurante = restaurantes.filter(restaurante => restaurante.id !== restauranteAhSerExcluido.id)
         setRestaurantes([...listaRestaurante])
