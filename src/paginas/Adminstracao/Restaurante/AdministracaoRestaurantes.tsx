@@ -55,7 +55,6 @@ const AdministracaoRestaurantes = () => {
               >Excluir</Button>
             </TableCell>
           </TableRow>)}
-
         </TableBody>
       </Table>
     </TableContainer>
